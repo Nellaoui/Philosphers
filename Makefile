@@ -6,7 +6,7 @@
 #    By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/22 11:59:39 by nelallao          #+#    #+#              #
-#    Updated: 2023/05/22 13:33:47 by nelallao         ###   ########.fr        #
+#    Updated: 2023/05/27 11:12:57 by nelallao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ RM = rm -f
 SRC = Philosophers.c libft_func.c
 
 all : $(NAME)
+
+# FLAGS = -fsanitize=thread -g
 
 $(NAME) :$(SRC)
 	@$(CC) $(FLAGS) $(SRC) -o $(NAME)

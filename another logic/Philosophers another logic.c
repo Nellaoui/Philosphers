@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Philosophers.c                                     :+:      :+:    :+:   */
+/*   Philosophers another logic.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:52:15 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/24 17:02:22 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/27 11:01:38 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	create_philo(char **av)
 	while (i < ph->number_of_philosophers)
 	{
 		ph[i].id = i;
-		ph[i].start_time = t;
+		// ph[i].start_time = t;
 		ph[i].right_fork = &forks[i];
 		ph[i].left_fork = &forks[(i + 1) % ph->number_of_philosophers];
 		pthread_create(&th[i], NULL, routine, &ph[i]);

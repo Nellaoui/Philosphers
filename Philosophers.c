@@ -6,11 +6,12 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:52:15 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/24 18:45:29 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/27 11:12:20 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
 
 long	ft_time_counter(void)
 {
@@ -27,12 +28,46 @@ void	*routine(void *arg)
 	int		left_fork;
 
 	philo = (t_philo *) arg;
-	// write(1, "X", 1);
-	// right_fork = philo->id;
-	// left_fork = (philo->id + 1) % philo->data->number_of_philosophers;
-	while(1)
+	philo->start = ft_time_counter();
+	pthread_mutex_lock(&philo->data->m_last_eat);
+	philo->last_eat = ft_time_counter();
+	pthread_mutex_unlock(&philo->data->m_last_eat);
+	// printf("%d start time = %ld\n", philo->id,philo->start);
+	right_fork = philo->id;
+	left_fork = (philo->id + 1) % philo->data->number_of_philosophers;
+	if ((philo->id % 2) == 0)
+		usleep(1500);
+	while (1)
 	{
-		printf("(%ld)\n", (ft_time_counter() - philo->data->start));
+		pthread_mutex_lock(&philo->data->m_dead);
+		if (philo->data->is_dead == 0)
+			printf("%ld %d is thinking \n", (ft_time_counter() - philo->start), philo->id + 1);
+		pthread_mutex_unlock(&philo->data->m_dead);
+		pthread_mutex_lock(&philo->data->forks[right_fork]);
+		pthread_mutex_lock(&philo->data->m_dead);
+		if (philo->data->is_dead == 0)
+			printf("%ld %d has taken a fork\n", (ft_time_counter() - philo->start), philo->id+1);
+		pthread_mutex_unlock(&philo->data->m_dead);
+		pthread_mutex_lock(&philo->data->forks[left_fork]);
+		pthread_mutex_lock(&philo->data->m_dead);
+		if (philo->data->is_dead == 0)
+			printf("%ld %d has taken a fork\n", (ft_time_counter() - philo->start), philo->id+1);
+		pthread_mutex_unlock(&philo->data->m_dead);
+		pthread_mutex_lock(&philo->data->m_dead);
+		if (philo->data->is_dead == 0)
+			printf("%ld %d is eating\n", (ft_time_counter() - philo->start), philo->id + 1);
+		pthread_mutex_unlock(&philo->data->m_dead);
+		pthread_mutex_lock(&philo->data->m_last_eat);
+		philo->last_eat = ft_time_counter();
+		pthread_mutex_unlock(&philo->data->m_last_eat);
+		usleep(philo->data->time_to_eat * 1000);
+		pthread_mutex_unlock(&philo->data->forks[right_fork]);
+		pthread_mutex_unlock(&philo->data->forks[left_fork]);
+		pthread_mutex_lock(&philo->data->m_dead);
+		if (philo->data->is_dead == 0)
+			printf("%ld %d is sleeping\n", (ft_time_counter() - philo->start), philo->id+1);
+		pthread_mutex_unlock(&philo->data->m_dead);
+		usleep(philo->data->time_to_sleep * 1000);
 	}
 	return (NULL);
 }
@@ -41,10 +76,11 @@ void	ft_give_agruments(char **av, t_struct *data)
 {
 	data->number_of_philosophers = ft_atoi(av[1]);
 	data->time_to_die = ft_atoi(av[2]);
-	data->number_of_eat = ft_atoi(av[3]);
+	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
 	if (av[5])
 		data->number_of_eat = ft_atoi(av[5]);
+	// data->start = ft_time_counter();
 }
 
 void	create_philo(t_struct *s, char **av)
@@ -53,29 +89,52 @@ void	create_philo(t_struct *s, char **av)
 	t_philo			*philo;
 
 	ft_give_agruments(av, s);
-
 	s->forks = malloc(sizeof(pthread_mutex_t) * s->number_of_philosophers);
 	philo = malloc(sizeof(t_philo) * s->number_of_philosophers);
-	// philo->data = malloc(sizeof(t_philo) * s->number_of_philosophers);
-	i = 0;
-	while (i < s->number_of_philosophers)
-		pthread_mutex_init(&s->forks[i++], NULL);
 	i = 0;
 	while (i < s->number_of_philosophers)
 	{
-		pthread_join(philo[i].philosophers, NULL);
+		pthread_mutex_init(&s->forks[i], NULL);
+		pthread_mutex_init(&philo[i].m_philo, NULL);
 		i++;
 	}
+	pthread_mutex_init(&s->m_last_eat, NULL);
 	i = 0;
-	s->start = ft_time_counter();
 	while (i < s->number_of_philosophers)
 	{
 		philo[i].id = i;
 		philo[i].data = s;
 		pthread_create(&philo[i].philosophers, NULL, routine, &philo[i]);
-		sleep(5);
-		printf("\n\n\n\n\n\n\n");
 		usleep(100);
+		i++;
+	}
+	pthread_mutex_init(&s->m_dead, NULL);
+	while (1)
+	{
+		// mutex
+		// add is_dead var
+		i = 0;
+		while (i < s->number_of_philosophers)
+		{
+			pthread_mutex_lock(&philo->data->m_last_eat);
+			if ((ft_time_counter() - philo[i].last_eat) >= philo->data->time_to_die)
+			{
+				printf("%ld %d died	\n", (ft_time_counter() - philo[i].start), philo[i].id + 1);
+				pthread_mutex_lock(&s->m_dead);
+				s->is_dead = 1;
+				pthread_mutex_unlock(&s->m_dead);
+				pthread_mutex_unlock(&philo->data->m_last_eat);
+				return ;
+			}
+			i++;
+			pthread_mutex_unlock(&philo->data->m_last_eat);
+		}
+		usleep(1000);
+	}
+	i = 0;
+	while (i < s->number_of_philosophers)
+	{
+		pthread_join(philo[i].philosophers, NULL);
 		i++;
 	}
 }
@@ -106,7 +165,7 @@ int	main(int ac, char **av)
 	t_struct	*s;
 
 	s = malloc(sizeof(t_struct));
-
+	s->is_dead = 0;
 	i = 0;
 	if (ac == 6 || ac == 5)
 	{
