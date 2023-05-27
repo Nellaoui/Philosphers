@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Philosophers.h                                     :+:      :+:    :+:   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:50:54 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/27 10:22:41 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/27 23:28:37 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,14 @@ typedef struct s_struct
 	pthread_mutex_t	*forks;
 	int				is_dead;
 	pthread_mutex_t	m_dead;
+	pthread_mutex_t	m_n_eat;
 	pthread_mutex_t	m_last_eat;
+	int				eat_check;
 }	t_struct;
 
 typedef struct s_philo
 {
+	int				n_eat;
 	long			start;
 	int				id;
 	pthread_t		philosophers;
@@ -51,6 +54,7 @@ long	ft_atoi(const char *str);
 /*------------------------------*/
 /*function for check arguments*/
 int		t_check_arg(char **av, t_struct *s, int i);
-void	my_usleep(long ms);
+void	ft_checker(t_philo	*philo, t_struct *s);
+
 /*------------------------------*/
 #endif
