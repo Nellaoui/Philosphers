@@ -6,26 +6,25 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:52:15 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/27 23:46:13 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/29 16:32:35 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-
 long	ft_time_counter(void)
 {
-	struct timeval	currentTime;
+	struct timeval	currentime;
 
-	gettimeofday(&currentTime, NULL);
-	return ((currentTime.tv_sec * 1000) + (currentTime.tv_usec / 1000));
+	gettimeofday(&currentime, NULL);
+	return ((currentime.tv_sec * 1000) + (currentime.tv_usec / 1000));
 }
 
 void	ft_thinking(t_philo	*philo)
 {
 		pthread_mutex_lock(&philo->data->m_dead);
 		if (philo->data->is_dead == 0 && philo->data->number_of_eat >= philo->data->eat_check)
-			printf("%ld %d is thinking \n", (ft_time_counter() - philo->start), philo->id + 1);
+			printf("%ld %d is thinking 🤔\n", (ft_time_counter() - philo->start), philo->id + 1);
 		pthread_mutex_unlock(&philo->data->m_dead);
 
 }
@@ -40,12 +39,12 @@ void	ft_taken_forks(t_philo	*philo)
 		pthread_mutex_lock(&philo->data->forks[right_fork]);
 		pthread_mutex_lock(&philo->data->m_dead);
 		if (philo->data->is_dead == 0 && philo->data->number_of_eat >= philo->data->eat_check)
-			printf("%ld %d has taken a fork\n", (ft_time_counter() - philo->start), philo->id + 1);
+			printf("%ld %d has taken a fork 🍴\n", (ft_time_counter() - philo->start), philo->id + 1);
 		pthread_mutex_unlock(&philo->data->m_dead);
 		pthread_mutex_lock(&philo->data->forks[left_fork]);
 		pthread_mutex_lock(&philo->data->m_dead);
 		if (philo->data->is_dead == 0 && philo->data->number_of_eat >= philo->data->eat_check)
-			printf("%ld %d has taken a fork\n", (ft_time_counter() - philo->start), philo->id + 1);
+			printf("%ld %d has taken a fork 🍴\n", (ft_time_counter() - philo->start), philo->id + 1);
 		pthread_mutex_unlock(&philo->data->m_dead);
 
 }
@@ -60,7 +59,7 @@ void	ft_eating(t_philo	*philo)
 		pthread_mutex_lock(&philo->data->m_dead);
 		if (philo->data->is_dead == 0 && philo->data->number_of_eat >= philo->data->eat_check)
 		{
-			printf("%ld %d is eating\n", (ft_time_counter() - philo->start), philo->id + 1);
+			printf("%ld %d is eating 🍔\n", (ft_time_counter() - philo->start), philo->id + 1);
 			pthread_mutex_lock(&philo->data->m_n_eat);
 			philo->n_eat++;
 			pthread_mutex_unlock(&philo->data->m_n_eat);
@@ -78,7 +77,7 @@ void	ft_sleeping(t_philo	*philo)
 {
 		pthread_mutex_lock(&philo->data->m_dead);
 		if (philo->data->is_dead == 0 && philo->data->number_of_eat >= philo->data->eat_check)
-			printf("%ld %d is sleeping\n", (ft_time_counter() - philo->start), philo->id+1);
+			printf("%ld %d is sleeping 😴\n", (ft_time_counter() - philo->start), philo->id+1);
 		pthread_mutex_unlock(&philo->data->m_dead);
 		usleep(philo->data->time_to_sleep * 1000);
 		pthread_mutex_lock(&philo->data->m_n_eat);
@@ -98,11 +97,11 @@ void	*routine(void *arg)
 	philo->last_eat = ft_time_counter();
 	pthread_mutex_unlock(&philo->data->m_last_eat);
 	if ((philo->id % 2) == 0)
-		usleep(1000);
+		usleep(100);
 	while (1)
 	{
 		if (philo->data->is_dead == 2)
-			return NULL;
+			return (NULL);
 		ft_thinking(philo);
 		ft_taken_forks(philo);
 		ft_eating(philo);
@@ -152,7 +151,7 @@ void	create_philo(t_struct *s, char **av)
 		philo[i].data = s;
 		philo[i].n_eat = 0;
 		pthread_create(&philo[i].philosophers, NULL, routine, &philo[i]);
-		usleep(100);
+		usleep(150);
 		i++;
 	}
 	ft_checker(philo, s);
@@ -177,15 +176,15 @@ void	ft_checker(t_philo	*philo, t_struct *s)
 				pthread_mutex_unlock(&philo->data->m_last_eat);
 				return ;
 			}
+			pthread_mutex_unlock(&philo->data->m_last_eat);
 			if (philo[i].data->eat_check == philo[i].data->number_of_philosophers)
 			{
 				philo[i].data->is_dead = 2;
 				return ;
 			}
 			i++;
-			pthread_mutex_unlock(&philo->data->m_last_eat);
 		}
-		usleep(1000);
+		usleep(100);
 	}
 	i = 0;
 	while (i < s->number_of_philosophers)
@@ -193,10 +192,9 @@ void	ft_checker(t_philo	*philo, t_struct *s)
 		pthread_join(philo[i].philosophers, NULL);
 		i++;
 	}
-
 }
 
-int	ft_check_arg(char **av, t_struct *s, int ac)
+int	ft_check_arg(char **av)
 {
 	int	j;
 	int	i;
@@ -207,7 +205,7 @@ int	ft_check_arg(char **av, t_struct *s, int ac)
 		i = 0;
 		while (av[j][i])
 		{
-			if (!ft_isdigit(av[j][i]))
+			if (!ft_isdigit(av[j][i]) || av[j][0] == '\0' || av[j][0] == '0')
 				return (0);
 			i++;
 		}
@@ -226,11 +224,11 @@ int	main(int ac, char **av)
 	i = 0;
 	if (ac == 6 || ac == 5)
 	{
-		// if (!ft_check_arg(av, &s, ac))
-		// {
-		// 	write(2, "Please enter a valid numbers\n", 28);
-		// 	return (0);
-		// }
+		if (!ft_check_arg(av))
+		{
+			write(2, "Please enter a valid numbers\n", 28);
+			return (0);
+		}
 		create_philo(s, av);
 	}
 	else

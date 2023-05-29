@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:05:32 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/22 14:57:55 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/28 19:40:22 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,6 @@ long	ft_atoi(const char *str)
 	signe = 1;
 	i = 0;
 	result = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\v' || str[i] == '\n'
-		|| str[i] == '\r' || str[i] == '\f')
-	{
-		i++;
-	}
 	if (str[i] == '-')
 	{
 		signe = signe * (-1);

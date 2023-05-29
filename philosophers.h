@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:50:54 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/27 23:28:37 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:04:05 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ typedef struct s_philo
 	t_struct		*data;
 	pthread_mutex_t	m_philo;
 }	t_philo;
-
 
 /*LIBFT*/
 int		ft_isdigit(int n);
