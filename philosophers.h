@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:50:54 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/28 14:04:05 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:37:36 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 typedef struct s_struct
 {
-	int				number_of_philosophers;
+	int				num_of_philo;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
@@ -33,6 +33,8 @@ typedef struct s_struct
 	pthread_mutex_t	m_dead;
 	pthread_mutex_t	m_n_eat;
 	pthread_mutex_t	m_last_eat;
+	pthread_mutex_t	m_eat_check;
+	pthread_mutex_t	m_start_time;
 	int				eat_check;
 }	t_struct;
 
@@ -52,8 +54,20 @@ int		ft_isdigit(int n);
 long	ft_atoi(const char *str);
 /*------------------------------*/
 /*function for check arguments*/
-int		t_check_arg(char **av, t_struct *s, int i);
+void	ft_give_agruments(char **av, t_struct *data);
+void	ft_init_mutex(t_philo	*philo, t_struct *s);
+void	create_philo(t_struct *s, char **av);
+void	ft_thinking(t_philo	*philo);
+void	ft_taken_forks(t_philo	*philo, int right_fork, int left_fork);
+void	ft_eating(t_philo	*philo);
+void	ft_sleeping(t_philo	*philo);
+void	*routine(void *arg);
+int		ft_check_death(t_philo	*philo, t_struct *s, int i);
+long	ft_t(void);
+int		ft_check_arg(char **av);
 void	ft_checker(t_philo	*philo, t_struct *s);
+int		ft_usleep(long time);
+void	ft_free(t_philo *philo, t_struct *s);
 
 /*------------------------------*/
 #endif

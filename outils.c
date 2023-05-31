@@ -1,76 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft_func.c                                       :+:      :+:    :+:   */
+/*   outils.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:05:32 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/28 19:40:22 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:32:40 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-// static int	counter(const char *s, char c)
-// {
-// 	int	i;
-// 	int	n;
-
-// 	n = 0;
-// 	i = 0;
-// 	while (s[i])
-// 	{
-// 		while (s[i] == c)
-// 			i++;
-// 		if (s[i])
-// 		{
-// 			while (s[i] && s[i] != c)
-// 				i++;
-// 			n++;
-// 		}
-// 	}
-// 	return (n);
-// }
-
-// static int	w_len(const char *s, char c)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (s[i] && s[i] != c)
-// 		i++;
-// 	return (i);
-// }
-
-// char	**ft_split(char *s, char c)
-// {
-// 	char	**dest;
-// 	int		j;
-// 	int		k;
-
-// 	dest = (char **)ft_calloc((counter(s, c) + 1), (sizeof(char *)));
-// 	if (!dest)
-// 		return (0);
-// 	j = 0;
-// 	while (*s)
-// 	{
-// 		while (*s == c)
-// 			s++;
-// 		if (*s)
-// 		{
-// 			dest[j] = (char *)malloc((w_len(s, c) + 1) * (sizeof(char)));
-// 			if (!dest[j])
-// 				return (0);
-// 			k = 0;
-// 			while (*s && *s != c)
-// 				dest[j][k++] = *s++;
-// 			dest[j++][k] = '\0';
-// 		}
-// 	}
-// 	dest[j] = 0;
-// 	return (dest);
-// }
 
 int	ft_isdigit(int n)
 {
@@ -104,3 +44,41 @@ long	ft_atoi(const char *str)
 	return (result * signe);
 }
 
+long	ft_t(void)
+{
+	struct timeval	currentime;
+
+	gettimeofday(&currentime, NULL);
+	return ((currentime.tv_sec * 1000) + (currentime.tv_usec / 1000));
+}
+
+int	ft_usleep(long time)
+{
+	long	start;
+
+	start = ft_t();
+	while ((ft_t() - start) < time)
+		usleep(85);
+	return (0);
+}
+
+void	ft_free(t_philo *philo, t_struct *s)
+{
+	int	i;
+
+	i = 0;
+	free(s->forks);
+	free(s);
+	free(philo);
+	pthread_mutex_destroy(&s->m_last_eat);
+	pthread_mutex_destroy(&s->m_dead);
+	pthread_mutex_destroy(&s->m_n_eat);
+	pthread_mutex_destroy(&s->m_eat_check);
+	pthread_mutex_destroy(&s->m_start_time);
+	while (i < s->num_of_philo)
+	{
+		pthread_mutex_destroy(&s->forks[i]);
+		pthread_mutex_destroy(&philo[i].m_philo);
+		i++;
+	}
+}
