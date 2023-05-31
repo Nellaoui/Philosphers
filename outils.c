@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 12:05:32 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/31 18:32:40 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 23:30:45 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,18 +67,18 @@ void	ft_free(t_philo *philo, t_struct *s)
 	int	i;
 
 	i = 0;
-	free(s->forks);
-	free(s);
-	free(philo);
 	pthread_mutex_destroy(&s->m_last_eat);
 	pthread_mutex_destroy(&s->m_dead);
 	pthread_mutex_destroy(&s->m_n_eat);
 	pthread_mutex_destroy(&s->m_eat_check);
 	pthread_mutex_destroy(&s->m_start_time);
+	pthread_mutex_destroy(s->forks);
 	while (i < s->num_of_philo)
 	{
-		pthread_mutex_destroy(&s->forks[i]);
+		free(philo[i].data);
 		pthread_mutex_destroy(&philo[i].m_philo);
 		i++;
 	}
+	free(s->forks);
+	free(philo);
 }

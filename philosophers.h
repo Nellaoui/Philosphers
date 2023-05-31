@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 14:50:54 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/31 18:37:36 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 21:40:32 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ typedef struct s_struct
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_eat;
-	pthread_mutex_t	*forks;
+	int				eat_check;
 	int				is_dead;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	m_dead;
 	pthread_mutex_t	m_n_eat;
 	pthread_mutex_t	m_last_eat;
 	pthread_mutex_t	m_eat_check;
 	pthread_mutex_t	m_start_time;
-	int				eat_check;
 }	t_struct;
 
 typedef struct s_philo

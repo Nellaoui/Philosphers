@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 11:52:15 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/31 18:45:01 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 23:30:07 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,14 @@ int	main(int ac, char **av)
 		if (!ft_check_arg(av))
 		{
 			write(2, "Please enter a valid numbers\n", 28);
+			free(s);
 			return (0);
 		}
 		create_philo(s, av);
 	}
 	else
+	{
+		free(s);
 		write(2, "MISSING ARGUMENTS : Arguments must be (5) or (4)\n", 49);
+	}
 }
