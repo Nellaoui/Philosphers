@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 21:12:56 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/31 17:51:59 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/05/31 19:06:10 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@ int	ft_check_arg(char **av)
 	int	i;
 
 	j = 1;
+
 	while (av[j])
 	{
 		i = 0;
-		while (av[j][i])
+		if (av[j][0] == '\0' || av[j][0] == '0')
+			return (0);
+		while (av[j][i] != '\0')
 		{
-			if (!ft_isdigit(av[j][i]) || av[j][0] == '\0' || av[j][0] == '0')
+			if (!ft_isdigit(av[j][i]))
 				return (0);
 			i++;
 		}
