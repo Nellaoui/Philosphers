@@ -6,7 +6,7 @@
 /*   By: nelallao <nelallao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 21:12:56 by nelallao          #+#    #+#             */
-/*   Updated: 2023/05/31 19:06:10 by nelallao         ###   ########.fr       */
+/*   Updated: 2023/06/01 13:08:42 by nelallao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ int	ft_check_arg(char **av)
 	int	i;
 
 	j = 1;
-
 	while (av[j])
 	{
 		i = 0;
-		if (av[j][0] == '\0' || av[j][0] == '0')
+		while (av[j][i] == '0')
+			i++;
+		if (av[j][i] == '\0')
 			return (0);
 		while (av[j][i] != '\0')
 		{
@@ -62,7 +63,8 @@ void	ft_checker(t_philo	*philo, t_struct *s)
 int	ft_check_death(t_philo	*philo, t_struct *s, int i)
 {
 	pthread_mutex_lock(&philo->data->m_last_eat);
-	if ((ft_t() - philo[i].last_eat) >= philo->data->time_to_die)
+	if (((ft_t() - philo[i].last_eat) > philo->data->time_to_die)
+		&& philo[i].last_eat != 0)
 	{
 		pthread_mutex_lock(&s->m_dead);
 		pthread_mutex_lock(&s->m_start_time);
